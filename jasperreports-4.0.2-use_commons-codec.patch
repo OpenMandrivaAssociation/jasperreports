@@ -1,0 +1,114 @@
+diff -Nru jasperreports-4.0.2/src/net/sf/jasperreports/engine/export/JRXmlExporter.java jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/export/JRXmlExporter.java
+--- jasperreports-4.0.2/src/net/sf/jasperreports/engine/export/JRXmlExporter.java	2011-04-18 12:10:53.000000000 +0200
++++ jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/export/JRXmlExporter.java	2012-05-10 10:14:47.175715780 +0200
+@@ -90,7 +90,7 @@
+ import net.sf.jasperreports.engine.util.JRXmlWriteHelper;
+ import net.sf.jasperreports.engine.xml.JRXmlConstants;
+ 
+-import org.w3c.tools.codec.Base64Encoder;
++import org.apache.commons.codec.binary.Base64;
+ 
+ 
+ /**
+@@ -843,13 +843,8 @@
+ 			{
+ 				try
+ 				{
+-					ByteArrayInputStream bais = new ByteArrayInputStream(renderer.getImageData());
+-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+-					
+-					Base64Encoder encoder = new Base64Encoder(bais, baos);
+-					encoder.process();
+-					
+-					imageSource = new String(baos.toByteArray(), DEFAULT_XML_ENCODING);
++					byte[] byteOut = Base64.decodeBase64(renderer.getImageData());
++					imageSource = new String(byteOut, DEFAULT_XML_ENCODING);
+ 				}
+ 				catch (IOException e)
+ 				{
+diff -Nru jasperreports-4.0.2/src/net/sf/jasperreports/engine/util/JRValueStringUtils.java jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/util/JRValueStringUtils.java
+--- jasperreports-4.0.2/src/net/sf/jasperreports/engine/util/JRValueStringUtils.java	2011-01-22 19:30:02.000000000 +0100
++++ jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/util/JRValueStringUtils.java	2012-05-10 10:14:47.176715779 +0200
+@@ -34,9 +34,7 @@
+ 
+ import net.sf.jasperreports.engine.JRRuntimeException;
+ 
+-import org.w3c.tools.codec.Base64Decoder;
+-import org.w3c.tools.codec.Base64Encoder;
+-import org.w3c.tools.codec.Base64FormatException;
++import org.apache.commons.codec.binary.Base64;
+ 
+ 
+ /**
+@@ -459,12 +457,8 @@
+ 		{
+ 			try
+ 			{
+-				ByteArrayInputStream dataIn = new ByteArrayInputStream(data.getBytes());
+-				ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+-				Base64Decoder dec = new Base64Decoder(dataIn, bytesOut);
+-				dec.process();
+-				
+-				ByteArrayInputStream bytesIn = new ByteArrayInputStream(bytesOut.toByteArray());
++				byte[] bytesOut = Base64.decodeBase64(data.getBytes());
++				ByteArrayInputStream bytesIn = new ByteArrayInputStream(bytesOut);
+ 				ObjectInputStream objectIn = new ObjectInputStream(bytesIn);
+ 				return objectIn.readObject();
+ 			}
+@@ -476,10 +470,6 @@
+ 			{
+ 				throw new JRRuntimeException(e);
+ 			}
+-			catch (Base64FormatException e)
+-			{
+-				throw new JRRuntimeException(e);
+-			}
+ 		}
+ 
+ 		public String serialize(Object value)
+@@ -490,14 +480,9 @@
+ 				ObjectOutputStream objectOut = new ObjectOutputStream(bytesOut);
+ 				objectOut.writeObject(value);
+ 				objectOut.close();
+-				
+-				ByteArrayInputStream bytesIn = new ByteArrayInputStream(bytesOut.toByteArray());
+-				ByteArrayOutputStream dataOut = new ByteArrayOutputStream();				
+-				
+-				Base64Encoder enc = new Base64Encoder(bytesIn, dataOut);
+-				enc.process();
+-				
+-				return new String(dataOut.toByteArray(), "UTF-8");
++
++				byte[] dataOut = Base64.decodeBase64(bytesOut.toByteArray());   
++				return new String(dataOut, "UTF-8");
+ 			}
+ 			catch (NotSerializableException e)
+ 			{
+diff -Nru jasperreports-4.0.2/src/net/sf/jasperreports/engine/xml/JRPrintImageSourceObject.java jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/xml/JRPrintImageSourceObject.java
+--- jasperreports-4.0.2/src/net/sf/jasperreports/engine/xml/JRPrintImageSourceObject.java	2011-01-22 19:30:11.000000000 +0100
++++ jasperreports-4.0.2-gil/src/net/sf/jasperreports/engine/xml/JRPrintImageSourceObject.java	2012-05-10 10:14:47.177715778 +0200
+@@ -30,7 +30,7 @@
+ import net.sf.jasperreports.engine.JRImageRenderer;
+ import net.sf.jasperreports.engine.JRPrintImage;
+ 
+-import org.w3c.tools.codec.Base64Decoder;
++import org.apache.commons.codec.binary.Base64;
+ 
+ 
+ /**
+@@ -79,13 +79,8 @@
+ 		{
+ 			try
+ 			{
+-				ByteArrayInputStream bais = new ByteArrayInputStream(imageSource.getBytes("UTF-8"));//FIXMENOW other encodings ?
+-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+-				
+-				Base64Decoder decoder = new Base64Decoder(bais, baos);
+-				decoder.process();
+-				
+-				printImage.setRenderer(JRImageRenderer.getInstance(baos.toByteArray()));//, JRImage.ON_ERROR_TYPE_ERROR));
++				byte[] decodedBytes =  Base64.decodeBase64(imageSource.getBytes("UTF-8"));//FIXMENOW other encodings ?
++				printImage.setRenderer(JRImageRenderer.getInstance(decodedBytes));//, JRImage.ON_ERROR_TYPE_ERROR));
+ 			}
+ 			catch (Exception e)
+ 			{

@@ -1,0 +1,275 @@
+diff -Nru jasperreports-4.0.2/build.xml jasperreports-4.0.2-gil/build.xml
+--- jasperreports-4.0.2/build.xml	2012-05-10 09:52:32.322742166 +0200
++++ jasperreports-4.0.2-gil/build.xml	2012-05-10 09:51:13.961743715 +0200
+@@ -7,6 +7,8 @@
+ 	<target name="compile" description="Compiles the java source files of the library.">
+ 		<mkdir dir="./build/classes"/> 
+ 		<javac destdir="./build/classes" debug="true" optimize="false" deprecation="true" target="1.5" source="1.5" encoding="ISO-8859-1">
++			<exclude name="**/barcode4j/*.java"/>
++			<exclude name="**/barbecue/*.java"/>
+ 			<classpath>
+ 				<pathelement location="./build/classes"/>
+ 				<fileset dir="./lib">
+diff -Nru jasperreports-4.0.2/src/net/sf/jasperreports/components/ComponentsExtensionsRegistryFactory.java jasperreports-4.0.2-gil/src/net/sf/jasperreports/components/ComponentsExtensionsRegistryFactory.java
+--- jasperreports-4.0.2/src/net/sf/jasperreports/components/ComponentsExtensionsRegistryFactory.java	2011-01-22 19:29:51.000000000 +0100
++++ jasperreports-4.0.2-gil/src/net/sf/jasperreports/components/ComponentsExtensionsRegistryFactory.java	2012-05-10 09:51:13.635743721 +0200
+@@ -27,12 +27,6 @@
+ import java.util.HashMap;
+ import java.util.List;
+ 
+-import net.sf.jasperreports.components.barbecue.BarbecueCompiler;
+-import net.sf.jasperreports.components.barbecue.BarbecueDesignConverter;
+-import net.sf.jasperreports.components.barbecue.BarbecueFillFactory;
+-import net.sf.jasperreports.components.barcode4j.BarcodeCompiler;
+-import net.sf.jasperreports.components.barcode4j.BarcodeDesignConverter;
+-import net.sf.jasperreports.components.barcode4j.BarcodeFillFactory;
+ import net.sf.jasperreports.components.list.FillListFactory;
+ import net.sf.jasperreports.components.list.ListComponent;
+ import net.sf.jasperreports.components.list.ListComponentCompiler;
+@@ -113,23 +107,6 @@
+ 		tableManager.setComponentFillFactory(new FillTableFactory());
+ 		componentManagers.put(TABLE_COMPONENT_NAME, tableManager);
+ 		
+-		DefaultComponentManager barbecueManager = new DefaultComponentManager();
+-		barbecueManager.setDesignConverter(new BarbecueDesignConverter());
+-		barbecueManager.setComponentCompiler(new BarbecueCompiler());
+-		barbecueManager.setComponentXmlWriter(xmlHandler);
+-		barbecueManager.setComponentFillFactory(new BarbecueFillFactory());
+-		componentManagers.put(BARBECUE_COMPONENT_NAME, barbecueManager);
+-		
+-		DefaultComponentManager barcode4jManager = new DefaultComponentManager();
+-		barcode4jManager.setDesignConverter(new BarcodeDesignConverter());
+-		barcode4jManager.setComponentCompiler(new BarcodeCompiler());
+-		barcode4jManager.setComponentXmlWriter(xmlHandler);
+-		barcode4jManager.setComponentFillFactory(new BarcodeFillFactory());
+-		for (int i = 0; i < BARCODE4J_COMPONENT_NAMES.length; i++)
+-		{
+-			componentManagers.put(BARCODE4J_COMPONENT_NAMES[i], barcode4jManager);
+-		}
+-		
+ 		DefaultComponentManager spiderChartManager = new DefaultComponentManager();
+ 		spiderChartManager.setDesignConverter(new SpiderChartDesignConverter());
+ 		spiderChartManager.setComponentCompiler(new SpiderChartCompiler());
+diff -Nru jasperreports-4.0.2/src/net/sf/jasperreports/components/ComponentsXmlHandler.java jasperreports-4.0.2-gil/src/net/sf/jasperreports/components/ComponentsXmlHandler.java
+--- jasperreports-4.0.2/src/net/sf/jasperreports/components/ComponentsXmlHandler.java	2011-01-22 19:29:51.000000000 +0100
++++ jasperreports-4.0.2-gil/src/net/sf/jasperreports/components/ComponentsXmlHandler.java	2012-05-10 09:51:13.961743715 +0200
+@@ -28,24 +28,24 @@
+ 
+ import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
+ import net.sf.jasperreports.charts.xml.JRCategorySeriesFactory;
+-import net.sf.jasperreports.components.barbecue.BarbecueComponent;
+-import net.sf.jasperreports.components.barbecue.StandardBarbecueComponent;
+-import net.sf.jasperreports.components.barcode4j.BarcodeComponent;
+-import net.sf.jasperreports.components.barcode4j.BarcodeXmlWriter;
+-import net.sf.jasperreports.components.barcode4j.CodabarComponent;
+-import net.sf.jasperreports.components.barcode4j.Code128Component;
+-import net.sf.jasperreports.components.barcode4j.Code39Component;
+-import net.sf.jasperreports.components.barcode4j.DataMatrixComponent;
+-import net.sf.jasperreports.components.barcode4j.EAN128Component;
+-import net.sf.jasperreports.components.barcode4j.EAN13Component;
+-import net.sf.jasperreports.components.barcode4j.EAN8Component;
+-import net.sf.jasperreports.components.barcode4j.Interleaved2Of5Component;
+-import net.sf.jasperreports.components.barcode4j.PDF417Component;
+-import net.sf.jasperreports.components.barcode4j.POSTNETComponent;
+-import net.sf.jasperreports.components.barcode4j.RoyalMailCustomerComponent;
+-import net.sf.jasperreports.components.barcode4j.UPCAComponent;
+-import net.sf.jasperreports.components.barcode4j.UPCEComponent;
+-import net.sf.jasperreports.components.barcode4j.USPSIntelligentMailComponent;
++//import net.sf.jasperreports.components.barbecue.BarbecueComponent;
++//import net.sf.jasperreports.components.barbecue.StandardBarbecueComponent;
++//import net.sf.jasperreports.components.barcode4j.BarcodeComponent;
++//import net.sf.jasperreports.components.barcode4j.BarcodeXmlWriter;
++//import net.sf.jasperreports.components.barcode4j.CodabarComponent;
++//import net.sf.jasperreports.components.barcode4j.Code128Component;
++//import net.sf.jasperreports.components.barcode4j.Code39Component;
++//import net.sf.jasperreports.components.barcode4j.DataMatrixComponent;
++//import net.sf.jasperreports.components.barcode4j.EAN128Component;
++//import net.sf.jasperreports.components.barcode4j.EAN13Component;
++//import net.sf.jasperreports.components.barcode4j.EAN8Component;
++//import net.sf.jasperreports.components.barcode4j.Interleaved2Of5Component;
++//import net.sf.jasperreports.components.barcode4j.PDF417Component;
++//import net.sf.jasperreports.components.barcode4j.POSTNETComponent;
++//import net.sf.jasperreports.components.barcode4j.RoyalMailCustomerComponent;
++//import net.sf.jasperreports.components.barcode4j.UPCAComponent;
++//import net.sf.jasperreports.components.barcode4j.UPCEComponent;
++//import net.sf.jasperreports.components.barcode4j.USPSIntelligentMailComponent;
+ import net.sf.jasperreports.components.charts.ChartSettings;
+ import net.sf.jasperreports.components.charts.ChartSettingsXmlFactory;
+ import net.sf.jasperreports.components.list.DesignListContents;
+@@ -108,8 +108,6 @@
+ 	public void configureDigester(Digester digester)
+ 	{
+ 		addListRules(digester);
+-		addBarbecueRules(digester);
+-		addBarcode4jRules(digester);
+ 		addTableRules(digester);
+ 		addSpiderChartRules(digester);
+ 	}
+@@ -131,107 +129,6 @@
+ 		digester.addSetNext(listContentsPattern, "setContents");
+ 	}
+ 
+-	protected void addBarbecueRules(Digester digester)
+-	{
+-		String barcodePattern = "*/componentElement/barbecue";
+-		digester.addObjectCreate(barcodePattern, StandardBarbecueComponent.class);
+-		digester.addSetProperties(barcodePattern,
+-				//properties to be ignored by this rule
+-				new String[]{JRXmlConstants.ATTRIBUTE_evaluationTime, StandardBarbecueComponent.PROPERTY_ROTATION}, 
+-				new String[0]);
+-		digester.addRule(barcodePattern, 
+-				new XmlConstantPropertyRule(
+-						JRXmlConstants.ATTRIBUTE_evaluationTime, "evaluationTimeValue",
+-						EvaluationTimeEnum.values()));
+-		digester.addRule(barcodePattern, 
+-				new XmlConstantPropertyRule(
+-						StandardBarbecueComponent.PROPERTY_ROTATION,
+-						RotationEnum.values()));
+-
+-		String barcodeExpressionPattern = barcodePattern + "/codeExpression";
+-		digester.addFactoryCreate(barcodeExpressionPattern, 
+-				JRExpressionFactory.StringExpressionFactory.class.getName());
+-		digester.addCallMethod(barcodeExpressionPattern, "setText", 0);
+-		digester.addSetNext(barcodeExpressionPattern, "setCodeExpression", 
+-				JRExpression.class.getName());
+-
+-		String applicationIdentifierExpressionPattern = barcodePattern 
+-				+ "/applicationIdentifierExpression";
+-		digester.addFactoryCreate(applicationIdentifierExpressionPattern, 
+-				JRExpressionFactory.StringExpressionFactory.class.getName());
+-		digester.addCallMethod(applicationIdentifierExpressionPattern, "setText", 0);
+-		digester.addSetNext(applicationIdentifierExpressionPattern, 
+-				"setApplicationIdentifierExpression", 
+-				JRExpression.class.getName());
+-	}
+-
+-	protected void addBarcode4jRules(Digester digester)
+-	{
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/Codabar", 
+-				CodabarComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/Code128", 
+-				Code128Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/EAN128", 
+-				EAN128Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/DataMatrix", 
+-				DataMatrixComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/RoyalMailCustomer", 
+-				RoyalMailCustomerComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/USPSIntelligentMail", 
+-				USPSIntelligentMailComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/Code39", Code39Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/Interleaved2Of5", Interleaved2Of5Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/UPCA", UPCAComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/UPCE", UPCEComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/EAN13", EAN13Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/EAN8", EAN8Component.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/POSTNET", POSTNETComponent.class);
+-		addBaseBarcode4jRules(digester, 
+-				"*/componentElement/PDF417", PDF417Component.class);
+-	}
+-	
+-	protected void addBaseBarcode4jRules(Digester digester, 
+-			String barcodePattern, Class barcodeComponentClass)
+-	{
+-		digester.addObjectCreate(barcodePattern, barcodeComponentClass);
+-		digester.addSetProperties(barcodePattern,
+-				//properties to be ignored by this rule
+-				new String[]{JRXmlConstants.ATTRIBUTE_evaluationTime}, 
+-				new String[0]);
+-		//rule to set evaluation time
+-		digester.addRule(barcodePattern, 
+-				new XmlConstantPropertyRule(
+-						JRXmlConstants.ATTRIBUTE_evaluationTime, "evaluationTimeValue",
+-						EvaluationTimeEnum.values()));
+-		
+-		String codeExpressionPattern = barcodePattern + "/codeExpression";
+-		digester.addFactoryCreate(codeExpressionPattern, 
+-				JRExpressionFactory.StringExpressionFactory.class.getName());
+-		digester.addCallMethod(codeExpressionPattern, "setText", 0);
+-		digester.addSetNext(codeExpressionPattern, "setCodeExpression", 
+-				JRExpression.class.getName());
+-		
+-		String patternExpressionPattern = barcodePattern + "/patternExpression";
+-		digester.addFactoryCreate(patternExpressionPattern, 
+-				JRExpressionFactory.StringExpressionFactory.class.getName());
+-		digester.addCallMethod(patternExpressionPattern, "setText", 0);
+-		digester.addSetNext(patternExpressionPattern, "setPatternExpression", 
+-				JRExpression.class.getName());
+-	}
+-
+ 	protected void addTableRules(Digester digester)
+ 	{
+ 		String tablePattern = "*/componentElement/table";
+@@ -323,18 +220,6 @@
+ 			TableComponent table = (TableComponent) component;
+ 			writeTable(table, componentKey, reportWriter);
+ 		}
+-		else if (component instanceof BarbecueComponent)
+-		{
+-			BarbecueComponent barcode = (BarbecueComponent) component;
+-			writeBarbecue(barcode, componentKey, reportWriter);
+-		}
+-		else if (component instanceof BarcodeComponent)
+-		{
+-			BarcodeComponent barcode = (BarcodeComponent) component;
+-			BarcodeXmlWriter barcodeWriter = new BarcodeXmlWriter(
+-					reportWriter, barcode, componentKey);
+-			barcodeWriter.writeBarcode();
+-		}
+ 		else if (component instanceof SpiderChartComponent)
+ 		{
+ 			SpiderChartComponent spiderChart = (SpiderChartComponent) component;
+@@ -367,40 +252,6 @@
+ 		
+ 		writer.closeElement();
+ 	}
+-
+-	protected void writeBarbecue(BarbecueComponent barcode, ComponentKey componentKey,
+-			JRXmlWriter reportWriter) throws IOException
+-	{
+-		JRXmlWriteHelper writer = reportWriter.getXmlWriteHelper();
+-		
+-		XmlNamespace namespace = new XmlNamespace(
+-				ComponentsExtensionsRegistryFactory.NAMESPACE, 
+-				componentKey.getNamespacePrefix(),
+-				ComponentsExtensionsRegistryFactory.XSD_LOCATION);
+-		
+-		writer.startElement("barbecue", namespace);
+-		
+-		writer.addAttribute("type", barcode.getType());
+-		writer.addAttribute("drawText", barcode.isDrawText());
+-		writer.addAttribute("checksumRequired", barcode.isChecksumRequired());
+-		writer.addAttribute("barWidth", barcode.getBarWidth());
+-		writer.addAttribute("barHeight", barcode.getBarHeight());
+-		writer.addAttribute("rotation", barcode.getOwnRotation());
+-		if (barcode.getEvaluationTimeValue() != EvaluationTimeEnum.NOW)
+-		{
+-			writer.addAttribute(JRXmlConstants.ATTRIBUTE_evaluationTime, 
+-					barcode.getEvaluationTimeValue());
+-		}
+-		writer.addAttribute(JRXmlConstants.ATTRIBUTE_evaluationGroup, 
+-				barcode.getEvaluationGroup());
+-
+-		writer.writeExpression("codeExpression", 
+-				barcode.getCodeExpression(), false);
+-		writer.writeExpression("applicationIdentifierExpression", 
+-				barcode.getApplicationIdentifierExpression(), false);
+-		
+-		writer.closeElement();
+-	}
+ 
+ 	protected void writeTable(TableComponent table, ComponentKey componentKey,
+ 			final JRXmlWriter reportWriter) throws IOException

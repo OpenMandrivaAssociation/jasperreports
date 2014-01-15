@@ -1,0 +1,10 @@
+--- build.xml	2012-05-10 10:26:30.841701871 +0200
++++ build.xml-gil	2012-05-10 10:28:33.751699440 +0200
+@@ -448,6 +448,6 @@
+ 		</copy>
+ 	</target>
+ 	
+-	<target name="docs" depends="javadoc, schemaref, configref, sampleref" description="Generates all documentation."/>
++	<target name="docs" depends="javadoc, schemaref, configref" description="Generates all documentation."/>
+ 
+ </project>

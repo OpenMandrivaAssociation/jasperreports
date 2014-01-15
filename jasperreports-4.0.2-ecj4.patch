@@ -1,0 +1,17 @@
+--- src/net/sf/jasperreports/engine/design/JRJdtCompiler.java	2011-01-22 19:30:00.000000000 +0100
++++ src/net/sf/jasperreports/engine/design/JRJdtCompiler.java-gil	2012-12-23 10:18:09.536960055 +0100
+@@ -154,6 +154,14 @@
+ 		{
+ 			return new char[0][0];
+ 		}
++
++		/* (non-Javadoc)
++		* @see org.eclipse.jdt.internal.compiler.env.ICompilationUnit#ignoreOptionalProblems()
++		*/
++		public boolean ignoreOptionalProblems() {
++			// TODO: Auto-generated method stub
++			return false;
++		}
+ 	}
+ 
+ 	

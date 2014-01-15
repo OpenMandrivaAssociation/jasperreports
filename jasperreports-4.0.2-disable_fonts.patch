@@ -1,0 +1,11 @@
+--- build.xml	2012-05-10 10:24:23.082704396 +0200
++++ build.xml-gil	2012-05-10 10:24:44.440703974 +0200
+@@ -41,7 +41,7 @@
+ 		</antlr>
+ 	</target>
+ 
+-	<target name="jar" depends="compile, javaflow, applet, fonts" description="Builds the JasperReports JAR files.">
++	<target name="jar" depends="compile, javaflow, applet" description="Builds the JasperReports JAR files.">
+ 		<mkdir dir="./dist"/> 
+ 		<jar jarfile="./dist/jasperreports-${version}.jar" manifest="src/META-INF/MANIFEST.MF">
+ 			<fileset dir="./build/classes"/>

@@ -1,0 +1,10 @@
+--- build.xml	2012-05-10 10:03:15.496729451 +0200
++++ build.xml-gil	2012-05-10 10:03:47.410728822 +0200
+@@ -340,7 +340,6 @@
+ 				use="true"
+ 				windowtitle="JasperReports ${version} API"
+ 				excludepackagenames="org.w3c.tools.codec"
+-				maxmemory="128m"
+ 				encoding="ISO-8859-1">
+ 			<doctitle>
+ <![CDATA[

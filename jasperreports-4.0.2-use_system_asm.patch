@@ -1,0 +1,20 @@
+--- src/net/sf/jasperreports/compilers/JRGroovyCompiler.java	2011-01-22 19:30:18.000000000 +0100
++++ src/net/sf/jasperreports/compilers/JRGroovyCompiler.java-gil	2012-05-10 09:41:11.617755621 +0200
+@@ -28,8 +28,8 @@
+  */
+ package net.sf.jasperreports.compilers;
+ 
+-import groovyjarjarasm.asm.ClassVisitor;
+-import groovyjarjarasm.asm.ClassWriter;
++import org.objectweb.asm.ClassVisitor;
++import org.objectweb.asm.ClassWriter;
+ 
+ import java.io.ByteArrayInputStream;
+ import java.io.File;
+@@ -181,4 +181,4 @@
+ 	}
+ 
+ 
+-}
+\ Manca newline alla fine del file
++}

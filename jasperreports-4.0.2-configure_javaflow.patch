@@ -1,0 +1,30 @@
+--- build.xml	2011-04-18 19:25:21.000000000 +0200
++++ build.xml-gil	2012-05-10 09:48:10.103747350 +0200
+@@ -70,13 +70,26 @@
+ 			value="net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory">
+ 		</replace>
+ 
+-		<javaflow srcdir="./build/javaflow" dstdir="./build/javaflow" mode="bcel">
++		<javaflow srcdir="./build/javaflow" mode="bcel">
++			<include name="net/sf/jasperreports/engine/JRStyle.class"/>
++			<include name="net/sf/jasperreports/engine/JRTemplateReference.class"/>
++			<include name="net/sf/jasperreports/engine/JRStyleSetter.class"/>
++			<include name="net/sf/jasperreports/engine/JRVirtualizer.class"/>
++			<include name="net/sf/jasperreports/engine/base/JRBasePrintPage.class"/>
++			<include name="net/sf/jasperreports/engine/base/JRVirtualPrintPage.class"/>
++			<include name="net/sf/jasperreports/engine/util/FormatFactory.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRBaseFiller.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRVerticalFiller.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRHorizontalFiller.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRFillSubreport.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRSubreportRunnable.class"/>
+ 			<include name="net/sf/jasperreports/engine/fill/JRContinuationSubreportRunner.class"/>
++			<include name="net/sf/jasperreports/engine/fill/JRFillBand.class"/>
++			<include name="net/sf/jasperreports/engine/fill/JRFillGroup.class"/>
++			<include name="net/sf/jasperreports/engine/fill/JRBaseFiller.class"/>
++			<include name="net/sf/jasperreports/engine/fill/JRFillReportTemplate.class"/>
++			<include name="net/sf/jasperreports/engine/fill/JREvaluationTime.class"/>
++			<include name="net/sf/jasperreports/engine/fill/DatasetExpressionEvaluator.class"/>
+ 		</javaflow>
+ 
+ 		<mkdir dir="./dist"/> 
