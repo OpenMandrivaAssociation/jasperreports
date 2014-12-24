@@ -4,9 +4,9 @@ Name:          jasperreports
 # xmlbeans >= 2.5.0
 # castor-xml modules see also https://bugzilla.redhat.com/show_bug.cgi?id=820676
 Version:       4.0.2
-Release:       6.0%{?dist}
+Release:       10.1
 Summary:       Report-generating tool
-
+Group:	       Development/Java
 License:       LGPLv3+
 URL:           http://jasperforge.org/projects/jasperreports/
 # wget http://sourceforge.net/projects/jasperreports/files/jasperreports/JasperReports%204.0.2/jasperreports-4.0.2-project.tar.gz
@@ -55,14 +55,14 @@ BuildRequires: geronimo-saaj
 BuildRequires: groovy
 BuildRequires: hibernate3
 BuildRequires: hibernate-jpa-2.0-api
-BuildRequires: hsqldb
+BuildRequires: hsqldb1
 BuildRequires: itext-core
 BuildRequires: jaxen
 BuildRequires: jcommon
 BuildRequires: jexcelapi
 BuildRequires: jfreechart
-BuildRequires: log4j
-BuildRequires: objectweb-asm
+BuildRequires: log4j12
+BuildRequires: objectweb-asm3
 BuildRequires: rhino
 BuildRequires: springframework
 BuildRequires: springframework-beans
@@ -81,7 +81,7 @@ Requires:      batik
 Requires:      bcel
 Requires:      ecj >= 1:3.4.2-13
 Requires:      geronimo-saaj
-Requires:      hsqldb
+Requires:      hsqldb1
 Requires:      itext-core
 Requires:      jcommon
 Requires:      jfreechart
@@ -89,7 +89,6 @@ Requires:      springframework
 Requires:      springframework-beans
 Requires:      tomcat-servlet-3.0-api
 
-Requires:      java
 Requires:      jpackage-utils
 BuildArch:     noarch
 
@@ -106,15 +105,12 @@ oriented, ready to print documents in a
 simple and flexible manner.
 
 %package javadoc
-
 Summary:       Javadoc for %{name}
-Requires:      jpackage-utils
 
 %description javadoc
 This package contains javadoc for %{name}.
 
 %package manual
-
 Summary:       Manual for %{name}
 
 %description manual
@@ -147,27 +143,19 @@ ln -sf $(build-classpath commons-javaflow) lib/commons-javaflow-20060411.jar
 ln -sf $(build-classpath commons-logging) lib/commons-logging-1.0.4.jar
 ln -sf $(build-classpath dom4j) lib/dom4j-1.6.1.jar
 ln -sf $(build-classpath ecj) lib/jdt-compiler-3.1.1.jar
-%if 0%{?fedora}
-%if %{?fedora} > 17
 ln -sf $(build-classpath hibernate3/hibernate-core-3) lib/hibernate3.jar
-%else
-ln -sf $(build-classpath hibernate3/hibernate-core) lib/hibernate3.jar
-%endif
-%else
-ln -sf $(build-classpath hibernate3/hibernate-core-3) lib/hibernate3.jar
-%endif
 ln -sf $(build-classpath hibernate-jpa-2.0-api) lib/jpa.jar
 ln -sf $(build-classpath springframework/spring-beans) lib/spring-beans-2.5.5.jar
 ln -sf $(build-classpath springframework/spring-core) lib/spring-core-2.5.5.jar
 ln -sf $(build-classpath groovy) lib/groovy-all-1.7.5.jar
-ln -sf $(build-classpath hsqldb) lib/hsqldb-1.8.0-10.jar
+ln -sf $(build-classpath hsqldb1-1) lib/hsqldb-1.8.0-10.jar
 ln -sf $(build-classpath itext) lib/iText-2.1.7.jar
 ln -sf $(build-classpath jaxen) lib/jaxen-1.1.1.jar
 ln -sf $(build-classpath jcommon) lib/jcommon-1.0.15.jar
 ln -sf $(build-classpath jfreechart/jfreechart) lib/jfreechart-1.0.12.jar
 ln -sf $(build-classpath jxl) lib/jxl-2.6.10.jar
-ln -sf $(build-classpath log4j) lib/log4j-1.2.15.jar
-ln -sf $(build-classpath objectweb-asm/asm) lib/
+ln -sf $(build-classpath log4j12-1.2.17) lib/log4j-1.2.15.jar
+ln -sf $(build-classpath objectweb-asm3/asm) lib/
 ln -sf $(build-classpath poi/apache-poi) lib/poi-3.6.jar
 ln -sf $(build-classpath rhino) lib/rhino-1.7R1.jar
 ln -sf $(build-classpath geronimo-saaj) lib/saaj-api-1.3.jar
@@ -194,84 +182,33 @@ sed -i 's|deprecation="true"|deprecation="false"|' build.xml
 %pom_remove_dep mondrian:mondrian
 %pom_remove_dep com.keypoint:png-encoder
 
-%pom_add_dep commons-codec:commons-codec:any:compile
+%pom_add_dep commons-codec:commons-codec::compile
 
-%pom_remove_dep org.beanshell:bsh
-%pom_add_dep bsh:bsh:any:compile
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'bsh']/pom:groupId" bsh
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'bsh']/pom:version" 1.3.0
 
-%pom_remove_dep eclipse:jdtcore
-%pom_add_dep org.eclipse.jdt:core:any:compile
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'eclipse']/pom:groupId" org.eclipse.jdt
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'jdtcore']/pom:artifactId" core
 
-%pom_remove_dep org.codehaus.groovy:groovy-all
-%pom_add_dep org.codehaus.groovy:groovy:any:compile
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'org.codehaus.groovy']/pom:artifactId" groovy
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'org.codehaus.groovy']/pom:version" 1.8.9
 
-%pom_remove_dep jfree:jcommon
-%pom_xpath_inject "pom:dependencies" "
-<dependency>
-  <groupId>org.jfree</groupId>
-  <artifactId>jcommon</artifactId>
-  <version>1.0.15</version>
-  <scope>compile</scope>
-  <exclusions>
-    <exclusion>
-      <groupId>gnujaxp</groupId>
-      <artifactId>gnujaxp</artifactId>
-    </exclusion>
-  </exclusions>
-</dependency>"
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'jcommon']/pom:groupId" org.jfree
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'jfreechart']/pom:groupId" org.jfree
 
-%pom_remove_dep jfree:jfreechart
-%pom_xpath_inject "pom:dependencies" "
-<dependency>
-  <groupId>org.jfree</groupId>
-  <artifactId>jfreechart</artifactId>
-  <version>1.0.14</version>
-  <scope>compile</scope>
-  <exclusions>
-    <exclusion>
-      <groupId>gnujaxp</groupId>
-      <artifactId>gnujaxp</artifactId>
-    </exclusion>
-  </exclusions>
-</dependency>"
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'org.hibernate']/pom:artifactId" hibernate-core
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'org.hibernate']/pom:version" 3
 
-%pom_remove_dep org.hibernate:hibernate
-%pom_xpath_inject "pom:dependencies" "
-<dependency>
-  <groupId>org.hibernate</groupId>
-  <artifactId>hibernate-core</artifactId>
-  <version>3</version>
-  <scope>compile</scope>
-  <exclusions>
-    <exclusion>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-    </exclusion>
-  </exclusions>
-</dependency>"
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'commons-javaflow']/pom:groupId" org.apache.commons
 
-%pom_remove_dep commons-javaflow:commons-javaflow
-%pom_add_dep org.apache.commons:commons-javaflow:any:compile
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'javax.persistence']/pom:groupId" org.hibernate.javax.persistence
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'persistence-api']/pom:artifactId" hibernate-jpa-2.0-api
 
-# At the moment these deps don't provides maven files
-%pom_remove_dep jaxen:jaxen
-%pom_xpath_inject "pom:dependencies" "
-<dependency>
-  <groupId>jaxen</groupId>
-  <artifactId>jaxen</artifactId>
-  <version>1.1.1</version>
-  <scope>system</scope>
-  <systemPath>$(build-classpath jaxen)</systemPath>
-</dependency>"
-%pom_remove_dep rhino:js
-%pom_xpath_inject "pom:dependencies" "
-<dependency>
-  <groupId>rhino</groupId>
-  <artifactId>js</artifactId>
-  <version>1.7R1</version>
-  <scope>system</scope>
-  <systemPath>$(build-classpath rhino)</systemPath>
-</dependency>"
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'javax.xml.soap']/pom:groupId" org.apache.geronimo.specs
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'saaj-api']/pom:artifactId" geronimo-saaj_1.3_spec
+
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:groupId = 'rhino']/pom:groupId" org.mozilla
+%pom_xpath_set "pom:dependencies/pom:dependency[pom:artifactId = 'js']/pom:artifactId" rhino
 
 %build
 
@@ -293,10 +230,10 @@ mkdir -p %{buildroot}%{_javadocdir}/%{name}
 cp -rp dist/docs/api/* %{buildroot}%{_javadocdir}/%{name}
 rm -rf dist/docs/api
 
-%files
-%{_javadir}/%{name}
-%{_mavenpomdir}/JPP.%{name}-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
+%files -f .mfiles
+%dir %{_javadir}/%{name}
+%{_javadir}/%{name}/%{name}-applet.jar
+%{_javadir}/%{name}/%{name}-javaflow.jar
 %doc *.txt
 
 %files javadoc
@@ -308,6 +245,18 @@ rm -rf dist/docs/api
 %doc license.txt
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.0.2-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri Mar 28 2014 Michael Simacek <msimacek@redhat.com> - 4.0.2-9
+- Use Requires: java-headless rebuild (#1067528)
+
+* Fri Nov 15 2013 gil cattaneo <puntogil@libero.it> 4.0.2-8
+- use hsqldb1
+
+* Fri Nov 15 2013 gil cattaneo <puntogil@libero.it> 4.0.2-7
+- use objectweb-asm3
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.0.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -328,3 +277,4 @@ rm -rf dist/docs/api
 
 * Wed May 09 2012 gil cattaneo <puntogil@libero.it> 4.0.2-1
 - initial rpm
+
