@@ -8,7 +8,7 @@ Release:       10.3
 Summary:       Report-generating tool
 Group:	       Development/Java
 License:       LGPLv3+
-URL:           http://jasperforge.org/projects/jasperreports/
+URL:           https://jasperforge.org/projects/jasperreports/
 # wget http://sourceforge.net/projects/jasperreports/files/jasperreports/JasperReports%204.0.2/jasperreports-4.0.2-project.tar.gz
 # tar xf jasperreports-4.0.2-project.tar.gz
 # find jasperreports-4.0.2 -name '*.class' -delete
